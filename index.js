@@ -1,4 +1,7 @@
+"use strict";
+
 const http = require("http");
+const fs = require("fs");
 
 const server = http.createServer((req, res) => {
    if (req.url === "/") {
@@ -13,6 +16,18 @@ const server = http.createServer((req, res) => {
       res.writeHead(200, { "Content-Type": "text/html" });
       res.write("This is Contact Page");
       res.end();
+   } else if (req.url === "/file-write") {
+      fs.writeFile("demo.txt", "hello world", (err) => {
+         if (err) {
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.write("The File Could Not Be Created");
+            res.end();
+         } else {
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.write("The File Was Created Successfully");
+            res.end();
+         }
+      });
    }
 });
 

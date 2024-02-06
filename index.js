@@ -1,5 +1,6 @@
 const http = require("http");
 const fs = require("fs");
+const multer = require("multer");
 
 const server = http.createServer((req, res) => {
    if (req.url === "/") {
@@ -26,6 +27,28 @@ const server = http.createServer((req, res) => {
             res.end();
          }
       });
+   } else if (req.url === "/upload") {
+      const storage = multer.diskStorage({
+         destination: (req, file, callBack) => {
+            callBack(null, "./uploads");
+         },
+         filename: (req, file, callBack) => {
+            callBack(null, file.originalname);
+         },
+      });
+
+      const upload = multer({ storage: storage }).single("myfile");
+
+      upload(req, res, (err) => {
+         if (err) {
+            return res.end("File Upload Failed");
+         }
+         res.end("File Upload Successful");
+      });
+   } else {
+      res.writeHead(404, { "Content-Type": "text/html" });
+      res.write("404 Page Not Found");
+      res.end();
    }
 });
 
